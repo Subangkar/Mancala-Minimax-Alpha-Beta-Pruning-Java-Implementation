@@ -23,6 +23,11 @@ public class RandomStrategy extends Strategy {
 		return bin;
 	}
 	
+	@Override
+	public int getUtilValue( Mancala board ) {
+		return 0;
+	}
+	
 	public String toString() {
 		return "RandomStrategy";
 	}

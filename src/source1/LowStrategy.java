@@ -19,6 +19,11 @@ public class LowStrategy extends Strategy {
 		return bins;
 	}
 	
+	@Override
+	public int getUtilValue( Mancala board ) {
+		return 0;
+	}
+	
 	public String toString() {
 		return "LowStrategy";
 	}

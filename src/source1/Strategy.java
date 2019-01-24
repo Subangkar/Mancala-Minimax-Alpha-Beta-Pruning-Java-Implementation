@@ -33,4 +33,6 @@ public abstract class Strategy {
 			return 0;
 		}
 	}
+	
+	public abstract int getUtilValue( Mancala board );
 }

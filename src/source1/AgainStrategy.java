@@ -24,6 +24,11 @@ public class AgainStrategy extends Strategy {
 		return low.selectMove( board );
 	}
 	
+	@Override
+	public int getUtilValue( Mancala board ) {
+		return 0;
+	}
+	
 	public String toString() {
 		return "AgainStrategy";
 	}

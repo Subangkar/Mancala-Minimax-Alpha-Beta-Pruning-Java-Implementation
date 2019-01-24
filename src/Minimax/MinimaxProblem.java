@@ -1,8 +1,10 @@
 package Minimax;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public interface MinimaxProblem {
 	double getUtilVal();
-	List<Object> getSuccessors();
+	ArrayList<MinimaxProblem> getSuccessors();
+	boolean isTerminal();
+	
 }
