@@ -13,11 +13,7 @@ public class RandomStrategy extends Strategy {
 		int bins = board.getBins();
 		int bin = rand.intBetween( 1 , bins );
 		int player = board.currentPlayer();
-		board.debugPrint( "Random: bin = " + bin + "; board.getBin(player, i) = "
-				                  + board.getBin( board.currentPlayer() , bin ) );
 		while (board.getBin( bin ) == 0) {
-			board.debugPrint( "Random: bin = " + bin + "; board.getBin(player, bin) = "
-					                  + board.getBin( board.currentPlayer() , bin ) );
 			bin = rand.intBetween( 1 , bins );
 		}
 		return bin;

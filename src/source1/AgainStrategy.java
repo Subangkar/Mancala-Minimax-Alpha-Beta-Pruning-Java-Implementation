@@ -13,8 +13,6 @@ public class AgainStrategy extends Strategy {
 	public int selectMove( Mancala board ) {
 		int bins = board.getBins();
 		for (int i = 1; i <= bins; i++) {
-			board.debugPrint( "Again: i = " + i + "; board.getBin(player, i) = "
-					                  + board.getBin( board.currentPlayer() , i ) );
 			if (board.getBin( i ) == i) {
 				return i;
 			}

@@ -9,8 +9,6 @@ public class LowStrategy extends Strategy {
 	public int selectMove( Mancala board ) {
 		int bins = board.getBins();
 		for (int i = 1; i <= bins; i++) {
-			board.debugPrint( "Low: i = " + i + "; board.getBin(player, i) = "
-					                  + board.getBin( board.currentPlayer() , i ) );
 			if (board.getBin( i ) != 0) {
 				return i;
 			}

@@ -11,6 +11,8 @@ import java.util.ArrayList;
 
 public class Mancala implements MinimaxProblem, Cloneable {
 	
+	public static final boolean DEBUG = false;
+	
 	private int[][] players;
 	private int bins;
 	private int totalStones;
@@ -19,11 +21,11 @@ public class Mancala implements MinimaxProblem, Cloneable {
 	private int stonesMoved = 0; // Stones moved on last move.
 	private boolean debugMode = false;
 	
+	private boolean maximizing = false;
+	
 	public void setMaximizing( boolean maximizing ) {
 		this.maximizing = maximizing;
 	}
-	
-	private boolean maximizing = false;
 	
 	private static final int STORAGE = 0;
 	
@@ -88,6 +90,11 @@ public class Mancala implements MinimaxProblem, Cloneable {
 		return otherPlayer( currentPlayer );
 	}
 	
+	// Given one player, return the other.
+	public static int otherPlayer( int player ) {
+		return (player + 1) % 2;
+	}
+
 	// Player defaults to current player.
 	public int getBin( int bin ) {
 		return players[currentPlayer][bin];
@@ -100,39 +107,61 @@ public class Mancala implements MinimaxProblem, Cloneable {
 	
 	public boolean cannotMove() {
 		// Returns true if the currentPlayer cannot move.
-		debugPrint( "cannotMove(): currentPlayer = " + currentPlayer + "; board = \n" + this );
 		for (int i = 1; i <= bins; i++) {
 			if (players[currentPlayer][i] > 0) {
 				// System.out.println("CannotMove: player = " + currentPlayer + "; result = " + false);
-				debugPrint( "cannotMove() returns false" );
 				return false;
 			}
 		}
 		// System.out.println("CannotMove: player = " + currentPlayer + "; result = " + true);
-		debugPrint( "cannotMove() returns true" );
 		return true;
 	}
 	
+	// Steal stones from bin opposite specified bin to put in this player's mancala,
+	// along with extra stone about to be place in empty bin.
+	private void stealBin( int player , int bin ) {
+		int oppositeBin = bins + 1 - bin;
+		int oppositePlayer = otherPlayer( player );
+		players[player][STORAGE] += players[oppositePlayer][oppositeBin] + 1;
+		players[oppositePlayer][oppositeBin] = 0;
+	}
+	
+	public void flushStones( int player ) {
+		for (int i = 1; i <= bins; i++) {
+			flushBin( player , i );
+		}
+	}
+	
+	// Add stones from bin n to the mancala.
+	private void flushBin( int player , int bin ) {
+		players[player][STORAGE] += players[player][bin];
+		players[player][bin] = 0;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// Game is over when either (1) one player has more than half of the total
+	// stones in his mancala; or (2) current player cannot move.
 	public boolean isGameOver() {
-		// Game is over when either (1) one player has more than half of the total
-		// stones in his mancala; or (2) current player cannot move.
 		int half = totalStones / 2;
-		debugPrint( "isGameOver: player = " + currentPlayer
-				            + "; half = " + half
-				            + "; players[0][0] = " + players[0][0]
-				            + ";\n   players[1][0] = " + players[1][0]
-				            + "; cannotMove() = " + cannotMove()
-				            + "; result = " + ((players[0][0] > half) || (players[1][0] > half) || cannotMove()) );
-		
 		return (players[0][STORAGE] > half) || (players[1][STORAGE] > half) || cannotMove();
+//		return getPlayersTotalStones( currentPlayer ) == 0 && getPlayersTotalStones( opponentPlayer() ) == 0;
 	}
 	
 	public int move() {
 		// Invokes strategy of current player to make move. Returns the bin selected.
 		int bin = strategies[currentPlayer].selectMove( this );
+//		if (bin <= 0) return -1;
 		if (currentPlayer == 1)
 			bin = players[0].length - bin;// need to think length is already +1
-		System.out.println( this + "returned " + bin + " when size=" + getSuccessors().size() );
+//		System.out.println( this + "returned " + bin + " when size=" + getSuccessors().size() );
 		move( bin );
 		return bin;
 	}
@@ -148,10 +177,10 @@ public class Mancala implements MinimaxProblem, Cloneable {
 		// placed in player's mancala. If last stone goes in player's
 		// Mancala, current player stays the same and so goes again.
 		// Otherwise, current player becomes other player.
-		debugPrint( "Board before move(" + bin + "):\n" + this );
 		int stones = players[currentPlayer][bin];
 		if (getPlayersTotalStones( opponentPlayer() ) == 0) {
 			flushStones( currentPlayer );
+			currentPlayer = opponentPlayer();
 		} else {
 			stonesMoved = stones;
 			players[currentPlayer][bin] = 0;
@@ -172,7 +201,6 @@ public class Mancala implements MinimaxProblem, Cloneable {
 							if (cannotMove()) {
 								flushStones( otherPlayer( currentPlayer ) );
 							}
-							debugPrint( "Board after move(" + bin + "):\n" + this );
 							return;
 						}
 					} else {
@@ -191,47 +219,9 @@ public class Mancala implements MinimaxProblem, Cloneable {
 			currentPlayer = otherPlayer( currentPlayer );
 			if (cannotMove()) {
 				flushStones( otherPlayer( currentPlayer ) );
-				debugPrint( "Board after move(" + bin + "):\n" + this );
 			}
 		}
 	}
-	
-	public Mancala getSuccessor( int bin ) throws CloneNotSupportedException {
-		Mancala suc = (Mancala) this.clone();
-		suc.move( bin );
-		if (this.currentPlayer == suc.currentPlayer) suc.setMaximizing( true );
-		return suc;
-	}
-	
-	// Steal stones from bin opposite specified bin to put in this player's mancala,
-	// along with extra stone about to be place in empty bin.
-	private void stealBin( int player , int bin ) {
-		debugPrint( "Board before stealBin:\n" + this );
-		int oppositeBin = bins + 1 - bin;
-		int oppositePlayer = otherPlayer( player );
-		players[player][STORAGE] += players[oppositePlayer][oppositeBin] + 1;
-		players[oppositePlayer][oppositeBin] = 0;
-		// System.out.println("Stole stones from Player" + oppositePlayer + "\'s bin " + oppositeBin);
-		debugPrint( "Board after stealBin:\n" + this );
-	}
-	
-	public void flushStones( int player ) {
-		for (int i = 1; i <= bins; i++) {
-			flushBin( player , i );
-		}
-	}
-	
-	// Add stones from bin n to the mancala.
-	private void flushBin( int player , int bin ) {
-		players[player][STORAGE] += players[player][bin];
-		players[player][bin] = 0;
-	}
-	
-	// Given one player, return the other.
-	public static int otherPlayer( int player ) {
-		return (player + 1) % 2;
-	}
-	
 	
 	public static void main( String[] args ) {
 		stdin = new Stdin();
@@ -240,14 +230,10 @@ public class Mancala implements MinimaxProblem, Cloneable {
 
 
 ///======================== IO Methods =======================================////
-	// A driver loop for the text-based version of the game.
-	// You will not use code below this line in the graphical version of the game.
-	// However, you should study the play() method, since you will need to perform
-	// similar actions in your code.
 	
 	public static void playLoop() {
 		int bins = 2;//stdin.readInt( "Specify the number of bins on each side." );
-		int stones = 1;//stdin.readInt( "Specify the number of stones initially in each bin." );
+		int stones = 2;//stdin.readInt( "Specify the number of stones initially in each bin." );
 		Strategy s0 = selectStrategy( 0 );
 		Strategy s1 = selectStrategy( 1 );
 		PrintStream ps = System.out;
@@ -261,45 +247,39 @@ public class Mancala implements MinimaxProblem, Cloneable {
 	}
 	
 	public static Strategy selectStrategy( int player ) {
-//		System.err.println( "Select a strategy for Player" + player );
-//		System.err.println( "  0 is AskUserStrategy" );
-//		System.err.println( "  1 is RandomStrategy" );
-//		System.err.println( "  2 is LowStrategy" );
-//		System.err.println( "  3 is AgainStrategy" );
-//		return Strategy.intToStrategy( stdin.readIntInRange( 0 , 3 ) );
 		return Strategy.intToStrategy( 0 );
 	}
 	
 	
-	public void debugPrint( String s ) {
-		if (debugMode) {
-			System.out.println( s );
-		}
-	}
-
-///======================== IO Methods =======================================////
+	///======================== IO Methods =======================================////
 //================================================================================
 	
 	public static void play( int bins , int stones , Strategy s0 , Strategy s1 ) {
 		Mancala board = new Mancala( bins , stones , s0 , s1 );
-		
-		try {
-//			System.out.println( board.getSuccessor( 1 ).getSuccessor( 1 ) + " " + board.getSuccessor( 2 ).getSuccessor( 1 ).getSuccessors() );
-			System.out.println( board + " " + board.getSuccessor( 2 ) + " " + board.getSuccessor( 2 ).getSuccessor( 1 ) );
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
-		
+
+//		try {
+////			System.out.println( board.getSuccessor( 1 ).getSuccessor( 1 ) + " " + board.getSuccessor( 2 ).getSuccessor( 1 ).getSuccessors() );
+//			System.out.println( board + " " + board.getSuccessor( 2 ) + " " + board.getSuccessor( 2 ).getSuccessor( 1 ) );
+//		} catch (CloneNotSupportedException e) {
+//			e.printStackTrace();
+//		}
+
+//		board.move( 1 );
+//		board
 		
 		System.out.println( board );
+		int round = 0;
 		while (!board.isGameOver()) {
+			System.out.println( "------------" + round + "--------------" );
 			int currentPlayer = board.currentPlayer();
 			System.out.println( "Player " + currentPlayer + "\'s move." );
 			int bin = board.move();
+			if (bin <= 0) break;
 			System.out.println( "Player " + currentPlayer + " selects "
 					                    + board.stonesMoved() + " stones from bin " + bin );
 			System.out.println( board );
 			System.out.println( "\n\n\n--------------------------\n\n\n" );
+			round++;
 		}
 		System.out.println( "Final board configuration:\n" );
 		System.out.println( board );
@@ -313,11 +293,41 @@ public class Mancala implements MinimaxProblem, Cloneable {
 	}
 
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 //========================== Minimax Methods =================================
 	
 	@Override
 	public double getUtilVal() {
 		return strategies[currentPlayer()].getUtilValue( this );
+	}
+	
+	public Mancala getSuccessor( int bin ) throws CloneNotSupportedException {
+		Mancala suc = (Mancala) this.clone();
+		suc.move( bin );
+		if (this.currentPlayer == suc.currentPlayer) suc.setMaximizing( this.maximizing );
+		else suc.setMaximizing( !this.maximizing );
+		return suc;
 	}
 	
 	@Override

@@ -1,14 +1,28 @@
 package Minimax;
 
+import source1.Mancala;
+
 import java.util.ArrayList;
 
 public class Minimax {
 	
-	// Initial values of
-// Aplha and Beta
-	static int MAX = 1000;
-	static int MIN = -1000;
 	static double INF = 10000000;
+	
+	public static int minimax( MinimaxProblem root ) {
+		
+		int idx = 0;
+//		System.err.println( ">>For \n" + (Mancala)root + " Selected >> +\n"+root.getSuccessors());// + (Mancala)list.get( idx )
+//		if (root == null) return -1;
+		double max = alphabeta( root , -INF , INF , true );
+		ArrayList< MinimaxProblem > list = root.getSuccessors();
+		for (int i = 0; i < list.size(); ++i) {
+			if (list.get( i ) != null && list.get( i ).getUtilVal() == max) idx = i;
+			if (Mancala.DEBUG && list.get( i ) != null) System.out.print( list.get( i ).getUtilVal() + " " );
+		}
+		if (Mancala.DEBUG) System.out.println( " max=" + max );
+		return idx;
+	}
+	
 	
 	static double alphabeta( MinimaxProblem state , double alpha , double beta , boolean isMaximizing ) {
 		if (state.isTerminal()) return state.getUtilVal();
@@ -35,44 +49,5 @@ public class Minimax {
 	}
 	
 	
-	public static int minimax( MinimaxProblem root ) throws Exception {
-		
-		int idx = 0;
-//		System.err.println( ">>For \n" + (Mancala)root + " Selected >> +\n"+root.getSuccessors());// + (Mancala)list.get( idx )
-		double max = alphabeta( root , -INF , INF , true );
-		ArrayList< MinimaxProblem > list = root.getSuccessors();
-		for (int i = 0; i < list.size(); ++i) {
-			if (list.get( i ) != null && list.get( i ).getUtilVal() == max) idx = i;
-		}
-		return idx;
-//		throw new Exception( "Item Not Found" );
-	}
-	
-	private static double maxValue( MinimaxProblem state , double alpha , double beta ) {
-		if (state.isTerminal()) return state.getUtilVal();
-//		System.out.println("MAX = \n"+state.getSuccessors());
-		double v = -INF;
-		for (MinimaxProblem s : state.getSuccessors()) {
-			if (s == null) continue;
-			v = Math.max( v , minValue( s , alpha , beta ) );
-			if (v >= beta) return v;
-			alpha = Math.max( alpha , v );
-		}
-		return v;
-	}
-	
-	private static double minValue( MinimaxProblem state , double alpha , double beta ) {
-		if (state.isTerminal()) return state.getUtilVal();
-//		System.out.println("MIN = "+state.getSuccessors());
-		
-		double v = INF;
-		for (MinimaxProblem s : state.getSuccessors()) {
-			if (s == null) continue;
-			v = Math.min( v , maxValue( s , alpha , beta ) );
-			if (v <= alpha) return v;
-			beta = Math.min( beta , v );
-		}
-		return v;
-	}
 }
 // This code is contributed by vt_m.

@@ -21,9 +21,10 @@ public class AskUserStrategy extends Strategy {
 		int bin = 0;
 		try {
 			bin = Minimax.minimax( board ) + 1; // index starts from 0 bt bin from 1
-			for (MinimaxProblem m : board.getSuccessors()) {
-				if (m != null) System.out.println( m + " has " + Minimax.minimax( m ) + "\n\n" );
-			}
+			if (Mancala.DEBUG)
+				for (MinimaxProblem m : board.getSuccessors()) {
+					if (m != null) System.out.println( m + " has " + Minimax.minimax( m ) + "\n\n" );
+				}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
