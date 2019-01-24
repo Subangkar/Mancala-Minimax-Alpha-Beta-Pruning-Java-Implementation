@@ -6,5 +6,5 @@ public interface MinimaxProblem {
 	double getUtilVal();
 	ArrayList<MinimaxProblem> getSuccessors();
 	boolean isTerminal();
-	
+	boolean isMaximizing();
 }

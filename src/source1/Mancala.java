@@ -19,6 +19,12 @@ public class Mancala implements MinimaxProblem, Cloneable {
 	private int stonesMoved = 0; // Stones moved on last move.
 	private boolean debugMode = false;
 	
+	public void setMaximizing( boolean maximizing ) {
+		this.maximizing = maximizing;
+	}
+	
+	private boolean maximizing = false;
+	
 	private static final int STORAGE = 0;
 	
 	public static Stdin stdin;
@@ -193,6 +199,7 @@ public class Mancala implements MinimaxProblem, Cloneable {
 	public Mancala getSuccessor( int bin ) throws CloneNotSupportedException {
 		Mancala suc = (Mancala) this.clone();
 		suc.move( bin );
+		if (this.currentPlayer == suc.currentPlayer) suc.setMaximizing( true );
 		return suc;
 	}
 	
@@ -278,7 +285,7 @@ public class Mancala implements MinimaxProblem, Cloneable {
 		
 		try {
 //			System.out.println( board.getSuccessor( 1 ).getSuccessor( 1 ) + " " + board.getSuccessor( 2 ).getSuccessor( 1 ).getSuccessors() );
-			System.out.println( board + " " + board.getSuccessor( 2 )+ " " + board.getSuccessor( 2 ).getSuccessor( 1 ) );
+			System.out.println( board + " " + board.getSuccessor( 2 ) + " " + board.getSuccessor( 2 ).getSuccessor( 1 ) );
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
@@ -333,6 +340,11 @@ public class Mancala implements MinimaxProblem, Cloneable {
 	@Override
 	public boolean isTerminal() {
 		return isGameOver();
+	}
+	
+	@Override
+	public boolean isMaximizing() {
+		return false;
 	}
 // ==========================================================================
 	
