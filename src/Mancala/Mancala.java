@@ -1,9 +1,11 @@
-package source1;
+package Mancala;
 
 // A simple mancala game with a text based interface.
 
 
 import Minimax.MinimaxProblem;
+import source1.Stdin;
+import source1.Strategy;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;

@@ -23,7 +23,7 @@ public class AskUserStrategy extends Strategy {
 			bin = Minimax.minimax( board ) + 1; // index starts from 0 bt bin from 1
 			if (Mancala.DEBUG)
 				for (MinimaxProblem m : board.getSuccessors()) {
-					if (m != null) System.out.println( m + " has " + Minimax.minimax( m ) + "\n\n" );
+//					if (m != null) System.err.println( m + " has " + Minimax.minimax( m ) + "\n\n" );
 				}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -35,8 +35,8 @@ public class AskUserStrategy extends Strategy {
 	public int getUtilValue( Mancala board ) {
 		//heuristic-1: The evaluation function is
 		//(stones_in_my_storage – stones_in_opponents_storage)
-		int stones_in_my_storage = board.getStonesInStorage( board.currentPlayer() );//board.getPlayersTotalStones( board.currentPlayer() );
-		int stones_in_opponents_storage = board.getStonesInStorage( board.opponentPlayer() );//board.getPlayersTotalStones( Mancala.otherPlayer( board.currentPlayer() ) );
+		int stones_in_my_storage = board.getStonesInStorage( board.getMaxPlayer() );//board.getPlayersTotalStones( board.currentPlayer() );
+		int stones_in_opponents_storage = board.getStonesInStorage( Mancala.otherPlayer( board.getMaxPlayer() ) );//board.getPlayersTotalStones( Mancala.otherPlayer( board.currentPlayer() ) );
 		return stones_in_my_storage - stones_in_opponents_storage;
 	}
 	
