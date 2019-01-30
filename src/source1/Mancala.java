@@ -8,6 +8,7 @@ import Minimax.MinimaxProblem;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Mancala implements MinimaxProblem, Cloneable {
 	
@@ -21,7 +22,7 @@ public class Mancala implements MinimaxProblem, Cloneable {
 	private int stonesMoved = 0; // Stones moved on last move.
 	private boolean debugMode = false;
 	
-	private boolean maximizing = false;
+	private boolean maximizing = true;
 	
 	public void setMaximizing( boolean maximizing ) {
 		this.maximizing = maximizing;
@@ -66,6 +67,13 @@ public class Mancala implements MinimaxProblem, Cloneable {
 	public int getStonesInStorage( int player ) {
 		return players[player][STORAGE];
 	}
+	
+	public int getFirstNonEmptyBin( int player ) {
+		for (int j = 1; j <= bins; j++) {
+			if (players[player][j] > 0) return j;
+		}
+		return -1;
+	}
 ///=============================== Getter-Setters ===========================///
 	
 	public int countTotalStones() {
@@ -90,11 +98,15 @@ public class Mancala implements MinimaxProblem, Cloneable {
 		return otherPlayer( currentPlayer );
 	}
 	
+	void switchPlayer() {
+		currentPlayer = opponentPlayer();
+	}
+	
 	// Given one player, return the other.
 	public static int otherPlayer( int player ) {
 		return (player + 1) % 2;
 	}
-
+	
 	// Player defaults to current player.
 	public int getBin( int bin ) {
 		return players[currentPlayer][bin];
@@ -139,29 +151,26 @@ public class Mancala implements MinimaxProblem, Cloneable {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
 	// Game is over when either (1) one player has more than half of the total
 	// stones in his mancala; or (2) current player cannot move.
 	public boolean isGameOver() {
 		int half = totalStones / 2;
-		return (players[0][STORAGE] > half) || (players[1][STORAGE] > half) || cannotMove();
-//		return getPlayersTotalStones( currentPlayer ) == 0 && getPlayersTotalStones( opponentPlayer() ) == 0;
+//		return (players[0][STORAGE] > half) || (players[1][STORAGE] > half) || cannotMove();
+		return getPlayersTotalStones( currentPlayer ) == 0 && getPlayersTotalStones( opponentPlayer() ) == 0;
 	}
 	
 	public int move() {
-		// Invokes strategy of current player to make move. Returns the bin selected.
-		int bin = strategies[currentPlayer].selectMove( this );
+		
+		int bin = getFirstNonEmptyBin( currentPlayer() );
+		if (getPlayersTotalStones( opponentPlayer() ) != 0) {
+			// Invokes strategy of current player to make move. Returns the bin selected.
+			bin = strategies[currentPlayer].selectMove( this );
 //		if (bin <= 0) return -1;
-		if (currentPlayer == 1)
-			bin = players[0].length - bin;// need to think length is already +1
+		}
+//		if (currentPlayer == 1)
+//			bin = players[0].length - bin;// need to think length is already +1
 //		System.out.println( this + "returned " + bin + " when size=" + getSuccessors().size() );
+		
 		move( bin );
 		return bin;
 	}
@@ -178,9 +187,13 @@ public class Mancala implements MinimaxProblem, Cloneable {
 		// Mancala, current player stays the same and so goes again.
 		// Otherwise, current player becomes other player.
 		int stones = players[currentPlayer][bin];
+		if (stones == 0) {
+			System.err.println( "Error" );
+			return;
+		}
 		if (getPlayersTotalStones( opponentPlayer() ) == 0) {
 			flushStones( currentPlayer );
-			currentPlayer = opponentPlayer();
+//			currentPlayer = opponentPlayer();
 		} else {
 			stonesMoved = stones;
 			players[currentPlayer][bin] = 0;
@@ -293,28 +306,6 @@ public class Mancala implements MinimaxProblem, Cloneable {
 	}
 
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 //========================== Minimax Methods =================================
 	
 	@Override
@@ -430,6 +421,19 @@ public class Mancala implements MinimaxProblem, Cloneable {
 
 ///======================== Print Utilities ==================================////
 //================================================================================
-
+	
+	
+	@Override
+	public boolean problemequals( MinimaxProblem o ) {
+		if (this == o) return true;
+		if (o == null) return false;
+		Mancala mancala = (Mancala) o;
+		return bins == mancala.bins &&
+				       totalStones == mancala.totalStones &&
+				       currentPlayer == mancala.currentPlayer &&
+				       stonesMoved == mancala.stonesMoved &&
+//				       maximizing == mancala.maximizing &&
+				       Arrays.deepEquals( players , mancala.players );
+	}
 }
 
