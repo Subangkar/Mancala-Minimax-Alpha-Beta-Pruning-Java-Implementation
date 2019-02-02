@@ -184,11 +184,11 @@ public class Mancala implements MinimaxProblem, Cloneable {
 	
 	public void move( int bin ) {
 		// Bin should be a bin index for current player that holds one or more stones.
-		// Performs the basic Mancala move: removes stones from bin
+		// Performs the basic MancalaBoard move: removes stones from bin
 		// and places around board. IF last stone is placed in empty
 		// bin one player's side, that stone and opposing stones are
 		// placed in player's mancala. If last stone goes in player's
-		// Mancala, current player stays the same and so goes again.
+		// MancalaBoard, current player stays the same and so goes again.
 		// Otherwise, current player becomes other player.
 		int stones = players[currentPlayer][bin];
 		if (stones == 0) {
@@ -213,7 +213,7 @@ public class Mancala implements MinimaxProblem, Cloneable {
 						// If it's our mancala, place a stone.
 						players[currentSide][currentBin]++;
 						if (s == 1) {
-							// We're placing our last stone in our own Mancala.
+							// We're placing our last stone in our own MancalaBoard.
 							if (cannotMove()) {
 								flushStones( otherPlayer( currentPlayer ) );
 							}
