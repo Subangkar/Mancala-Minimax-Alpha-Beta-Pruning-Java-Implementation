@@ -6,3 +6,5 @@
 out\.txt
 
 *.kotlin_module
+
+*.log

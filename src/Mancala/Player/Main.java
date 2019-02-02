@@ -25,12 +25,12 @@ public class Main {
 	public static void playLoop() {
 		int bins = nBins;//stdin.readInt( "Specify the number of bins on each side." );
 		int stones = nStones;//stdin.readInt( "Specify the number of stones initially in each bin." );
-		MancalaHeuristic s0 = selectStrategy( 2 );
+		MancalaHeuristic s0 = selectStrategy( 1 );
 		MancalaHeuristic s1 = selectStrategy( 1 );
 //		PrintStream ps = System.out;
 		try {
-			System.setOut( new PrintStream( "out.txt" ) );
-//			System.setErr( new PrintStream( "log.txt" ) );
+			System.setOut( new PrintStream( "out.log" ) );
+			System.setErr( new PrintStream( "err.log" ) );
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -48,13 +48,6 @@ public class Main {
 	
 	public static void play( int bins , int stones , MancalaHeuristic s0 , MancalaHeuristic s1 ) {
 		MancalaBoard board = new MancalaBoard( bins , stones , s0 , s1 );
-
-//		try {
-////			System.out.println( board.getSuccessor( 1 ).getSuccessor( 1 ) + " " + board.getSuccessor( 2 ).getSuccessor( 1 ).getSuccessors() );
-//			System.out.println( board + " " + board.getSuccessor( 2 ) + " " + board.getSuccessor( 2 ).getSuccessor( 1 ) );
-//		} catch (CloneNotSupportedException e) {
-//			e.printStackTrace();
-//		}
 
 		System.out.println( board );
 		int round = 0;

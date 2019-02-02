@@ -6,6 +6,8 @@ import Mancala.Player.MancalaBoard;
 import Algorithms.Minimax.Minimax;
 
 public abstract class MancalaHeuristic {
+	public static final int MAX_WEIGHT=15;
+	
 	public int selectMove( MancalaBoard board ) {
 		int bin = 0;
 		try {

@@ -64,6 +64,10 @@ public class MancalaBoard implements MinimaxProblem, Cloneable {
 		}
 		return -1;
 	}
+	
+	public int getStonesMoved() {
+		return stonesMoved;
+	}
 ///=============================== Getter-Setters ===========================///
 	
 	public int countTotalStones() {
@@ -142,6 +146,7 @@ public class MancalaBoard implements MinimaxProblem, Cloneable {
 	
 	// Add stones from bin n to the mancala.
 	private void flushBin( int player , int bin ) {
+		stonesMoved = players[player][bin];
 		players[player][STORAGE] += players[player][bin];
 		players[player][bin] = 0;
 	}
@@ -238,16 +243,12 @@ public class MancalaBoard implements MinimaxProblem, Cloneable {
 	public MancalaBoard getSuccessor( int bin ) throws CloneNotSupportedException {
 		MancalaBoard suc = (MancalaBoard) this.clone();
 		suc.move( bin );
-//		if (this.currentPlayer == suc.currentPlayer) suc.setMaximizing( this.maximizing );
-//		else suc.setMaximizing( !this.maximizing );
-//		suc.setMaxPlayer( this.currentPlayer );
 		return suc;
 	}
 	
 	@Override
 	public ArrayList< MinimaxProblem > getSuccessors() {
 		ArrayList< MinimaxProblem > suclist = new ArrayList<>();
-//		if (currentPlayer == 0)
 		for (int i = 1; i <= bins; ++i) {
 			try {
 				if (players[currentPlayer][i] > 0)
