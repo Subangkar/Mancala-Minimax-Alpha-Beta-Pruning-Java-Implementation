@@ -1,4 +1,7 @@
-package Mancala;
+package Mancala.Heuristics;
+
+import Mancala.Player.MancalaBoard;
+import Mancala.Player.Stdin;
 
 public class UserHeuristic extends MancalaHeuristic {
 	@Override

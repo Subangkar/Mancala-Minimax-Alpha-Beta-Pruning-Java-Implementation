@@ -1,4 +1,4 @@
-package Mancala;
+package Mancala.Player;
 
 import java.util.Scanner;
 

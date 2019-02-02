@@ -1,23 +1,8 @@
-package Mancala;
+package Mancala.Heuristics;
 
-import Minimax.*;
+import Mancala.Player.MancalaBoard;
 
 public class Heuristic1 extends MancalaHeuristic {
-	@Override
-	public int selectMove( MancalaBoard board ) {
-		int bin = 0;
-		try {
-			bin = Minimax.minimax( board , Main.MAX_DEPTH ) + 1; // index starts from 0 bt bin from 1
-			if (Main.DEBUG)
-				for (MinimaxProblem m : board.getSuccessors()) {
-//					if (m != null) System.err.println( m + " has " + Minimax.minimax( m ) + "\n\n" );
-				}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return bin;
-	}
-	
 	@Override
 	public int getUtilValue( MancalaBoard board ) {
 		//heuristic-1: The evaluation function is

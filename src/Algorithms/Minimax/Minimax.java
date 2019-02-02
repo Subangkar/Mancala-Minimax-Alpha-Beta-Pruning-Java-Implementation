@@ -1,7 +1,6 @@
-package Minimax;
+package Algorithms.Minimax;
 
-import source1.Mancala;
-import Mancala.*;
+import Mancala.Player.MancalaBoard;
 
 import java.util.ArrayList;
 
@@ -53,10 +52,10 @@ public class Minimax {
 			return new Solution( state , state.getUtilVal() );
 		}
 //		for (int i = 0; i < 2 * maxdepth; ++i) System.err.print( "---------------" );
-		for (int i = 0; i < maxdepth; ++i) System.err.print( "---------------" );
+//		for (int i = 0; i < maxdepth; ++i) System.err.print( "---------------" );
 		if (isMaximizing) {
 			Solution maxSolution = new Solution( state , -INF );
-			System.err.println( "----------------------Taking Max--------------" + ((MancalaBoard) state).currentPlayer() + "\n\n" );
+//			System.err.println( "----------------------Taking Max--------------" + ((MancalaBoard) state).currentPlayer() + "\n\n" );
 			for (MinimaxProblem s : state.getSuccessors()) {
 				if (s == null) continue;
 				Solution solution = alphabeta( s , alpha , beta , s.isMaximizing() , maxdepth - 1 );
@@ -64,16 +63,17 @@ public class Minimax {
 				solution = new Solution( s , solution.v );
 				maxSolution = Solution.max( maxSolution , solution );
 				alpha = Math.max( alpha , maxSolution.v );
-				if (alpha >= beta) break; //beta-cut-off
+				if (alpha >= beta)
+					break; //beta-cut-off
 			}
-			for (int i = 0; i < maxdepth; ++i) System.err.print( "---------------" );
-			System.err.println( "@Depth: " + maxdepth + "  " + maxSolution.instance + " has Util: " + maxSolution.v + "\n\n" );
-			System.err.println( "----------------------Took   Max--------------\n\n" );
+//			for (int i = 0; i < maxdepth; ++i) System.err.print( "---------------" );
+//			System.err.println( "@Depth: " + maxdepth + "  " + maxSolution.instance + " has Util: " + maxSolution.v + "\n\n" );
+//			System.err.println( "----------------------Took   Max--------------\n\n" );
 			return maxSolution;
 			
 		} else {
 			Solution minSolution = new Solution( null , INF );
-			System.err.println( "----------------------Taking Min--------------" + ((MancalaBoard) state).currentPlayer() + "\n\n" );
+//			System.err.println( "----------------------Taking Min--------------" + ((MancalaBoard) state).currentPlayer() + "\n\n" );
 			for (MinimaxProblem s : state.getSuccessors()) {
 				if (s == null) continue;
 				Solution solution = alphabeta( s , alpha , beta , s.isMaximizing() , maxdepth - 1 );
@@ -81,11 +81,12 @@ public class Minimax {
 				solution = new Solution( s , solution.v );
 				minSolution = Solution.min( minSolution , solution );
 				beta = Math.min( beta , minSolution.v );
-				if (alpha >= beta) break; //alpha-cut-off
+				if (alpha >= beta)
+					break; //alpha-cut-off
 			}
-			for (int i = 0; i < maxdepth; ++i) System.err.print( "---------------" );
-			System.err.println( "@Depth: " + maxdepth + "  " + minSolution.instance + " has Util: " + minSolution.v + "\n\n" );
-			System.err.println( "----------------------Took   Min--------------\n\n" );
+//			for (int i = 0; i < maxdepth; ++i) System.err.print( "---------------" );
+//			System.err.println( "@Depth: " + maxdepth + "  " + minSolution.instance + " has Util: " + minSolution.v + "\n\n" );
+//			System.err.println( "----------------------Took   Min--------------\n\n" );
 			return minSolution;
 		}
 	}

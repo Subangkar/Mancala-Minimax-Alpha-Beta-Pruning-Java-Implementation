@@ -1,21 +1,29 @@
-package Mancala;
+package Mancala.Heuristics;
 
+
+import Mancala.Player.Main;
+import Mancala.Player.MancalaBoard;
+import Algorithms.Minimax.Minimax;
 
 public abstract class MancalaHeuristic {
-	abstract public int selectMove( MancalaBoard board );
+	public int selectMove( MancalaBoard board ) {
+		int bin = 0;
+		try {
+			bin = Minimax.minimax( board , Main.MAX_DEPTH ) + 1; // index starts from 0 bt bin from 1
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return bin;
+	}
 	// Return the index of a non-empty bin to move.
 	// Assumes that at least one move is possible.
 	
-	static MancalaHeuristic intToStrategy( int i ) {
+	public static MancalaHeuristic intToStrategy( int i ) {
 		// Returns a new MancalaHeuristic corresponding to the number between 0 and 3.
-		if (i == 1) {
-			return new Heuristic1();
-//		} else if (i == 2) {
-//			return new LowStrategy();
-//		} else if (i == 3) {
-//			return new AgainStrategy();
-		} else {
-			return new UserHeuristic();
+		switch (i){
+			case 1:return new Heuristic1();
+			case 2:return new Heuristic2();
+			default:return new UserHeuristic();
 		}
 	}
 	
