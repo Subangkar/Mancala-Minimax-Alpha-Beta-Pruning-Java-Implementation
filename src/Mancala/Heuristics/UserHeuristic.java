@@ -18,7 +18,7 @@ public class UserHeuristic extends MancalaHeuristic {
 	}
 	
 	@Override
-	public int getUtilValue( MancalaBoard board ) {
+	public int getHeuristicValue( MancalaBoard board ) {
 		return 0;
 	}
 }

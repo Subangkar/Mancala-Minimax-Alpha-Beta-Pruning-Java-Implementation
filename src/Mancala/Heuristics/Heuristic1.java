@@ -4,7 +4,7 @@ import Mancala.Player.MancalaBoard;
 
 public class Heuristic1 extends MancalaHeuristic {
 	@Override
-	public int getUtilValue( MancalaBoard board ) {
+	public int getHeuristicValue( MancalaBoard board ) {
 		int maxPlayer = board.getMaxPlayer();//board.getMaxPlayer();
 		int minPlayer = MancalaBoard.otherPlayer( maxPlayer );
 		//heuristic-1: The evaluation function is

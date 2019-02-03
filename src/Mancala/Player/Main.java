@@ -6,23 +6,20 @@ import Mancala.Heuristics.MancalaHeuristic;
 import java.io.*;
 
 public class Main {
-	public static final int nBins = 6;
-	public static final int nStones = 4;
+	private static final int nBins = 6;
+	private static final int nStones = 4;
 	public static final boolean DEBUG = false;
 	public static final int MAX_DEPTH = 11;
-	public static Stdin stdin;
-	public static final int nMaxStages = 150;
-	public static final boolean printBoard = false;
-	public static final int NO_GAMES_PER_HEURISTIC = 50;
-	public static final int MAX_ORDER = 2;
-	public static final int[] HEURISTIC_PLAYER0 = {3};
-	public static final int[] HEURISTIC_PLAYER1 = {2};
+	private static final int nMaxStages = 150;
+	private static final boolean PRINT_STATES = false;
+	private static final int NO_GAMES_PER_HEURISTIC = 10;
+	private static final int MAX_ORDER = 1;
+	private static final int[] HEURISTIC_PLAYER0 = { 1 , 2 , 3 , 4 };
+	private static final int[] HEURISTIC_PLAYER1 = { 1 , 2 , 3 , 4 };
 	
-	private static PrintStream stdout_, stdin_;
+	private static final PrintStream stdout_ = System.out;
 	
 	public static void main( String[] args ) throws IOException {
-		stdin = new Stdin();
-		stdout_ = System.out;
 		PrintWriter logFile = new PrintWriter( new FileWriter( "log.log" ) );
 		
 		int h0, h1;
@@ -33,6 +30,7 @@ public class Main {
 					h0 = order == 0 ? i : j;
 					h1 = order == 0 ? j : i;
 					int n0 = 0, n1 = 0, nD = 0;
+					long start_time = System.currentTimeMillis();
 					for (int game = 0; game < NO_GAMES_PER_HEURISTIC; ++game) {
 						int r = playLoop( selectStrategy( h0 ) , selectStrategy( h1 ) );
 						if (r == 0) ++n0;
@@ -41,12 +39,13 @@ public class Main {
 						System.setOut( stdout_ );
 						if (i == 1 && j == 1) break;
 					}
-					logFile.println( "0>Heuristic " + h0 + " :" + n0 + "\n1>Heuristic " + h1 + " :" + n1 + "\n >Draw        :" + nD + "\n" );
+					logFile.println( "0>Heuristic " + h0 + " : " + n0 + "\n1>Heuristic " + h1 + " : " + n1 + "\n >Draw        : " + nD );
+					logFile.println( "Execution time: " + (System.currentTimeMillis() - start_time) + "\n" );
+					logFile.flush();
 				}
 				
 			}
 		}
-		logFile.flush();
 	}
 
 
@@ -76,30 +75,30 @@ public class Main {
 	public static int play( int bins , int stones , MancalaHeuristic s0 , MancalaHeuristic s1 ) {
 		MancalaBoard board = new MancalaBoard( bins , stones , s0 , s1 );
 		
-		if (printBoard) System.out.println( board );
+		if (PRINT_STATES) System.out.println( board );
 		int round = 0;
 		while (!board.isGameOver() && round < nMaxStages) {
-			if (printBoard) System.out.println( "------------" + round + "--------------" );
+			if (PRINT_STATES) System.out.println( "------------" + round + "--------------" );
 			int currentPlayer = board.currentPlayer();
-			if (printBoard) System.out.println( "Player " + currentPlayer + "\'s move." );
+			if (PRINT_STATES) System.out.println( "Player " + currentPlayer + "\'s move." );
 			int bin = board.move();
 			if (bin <= 0) break;
-			if (printBoard) System.out.println( "Player " + currentPlayer + " selects "
-					                                    + board.stonesMoved() + " stones from bin " + bin );
-			if (printBoard) System.out.println( board );
-			if (printBoard) System.out.println( "\n\n\n--------------------------\n\n\n" );
+			if (PRINT_STATES) System.out.println( "Player " + currentPlayer + " selects "
+					                                      + board.stonesMoved() + " stones from bin " + bin );
+			if (PRINT_STATES) System.out.println( board );
+			if (PRINT_STATES) System.out.println( "\n\n\n--------------------------\n\n\n" );
 			round++;
 		}
 		System.out.println( "Final board configuration:\n" );
 		System.out.println( board );
 		if (board.getBin( 0 , 0 ) == board.getBin( 1 , 0 )) {
-			if (printBoard) System.out.println( "The game ends in a tie!" );
+			if (PRINT_STATES) System.out.println( "The game ends in a tie!" );
 			return -1;
 		} else if (board.getBin( 0 , 0 ) > board.getBin( 1 , 0 )) {
-			if (printBoard) System.out.println( "Player0 wins!" );
+			if (PRINT_STATES) System.out.println( "Player0 wins!" );
 			return 0;
 		} else {
-			if (printBoard) System.out.println( "Player1 wins!" );
+			if (PRINT_STATES) System.out.println( "Player1 wins!" );
 			return 1;
 		}
 	}

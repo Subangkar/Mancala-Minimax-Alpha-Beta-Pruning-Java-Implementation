@@ -6,7 +6,7 @@ import Mancala.Player.Main;
 import Mancala.Player.MancalaBoard;
 
 public abstract class MancalaHeuristic {
-	public static final int MAX_WEIGHT=15;
+	static final int MAX_WEIGHT=5;
 	
 	public int selectMove( MancalaBoard board ) {
 		int bin = 0;
@@ -21,7 +21,7 @@ public abstract class MancalaHeuristic {
 	// Assumes that at least one move is possible.
 	
 	public static MancalaHeuristic intToStrategy( int i ) {
-		// Returns a new MancalaHeuristic corresponding to the number between 0 and 3.
+		// Returns a new MancalaHeuristic corresponding to the number between 0 and 4.
 		switch (i){
 			case 1:return new Heuristic1();
 			case 2:return new Heuristic2();
@@ -32,20 +32,5 @@ public abstract class MancalaHeuristic {
 	}
 	
 	
-	public static int strategyToInt( MancalaHeuristic s ) {
-		// Returns an integer corresponding to the given strategy.
-		// Make this a static rather than an instance method to put all numbers in one place.
-//		if (s instanceof RandomStrategy) {
-//			return 1;
-//		} else if (s instanceof LowStrategy) {
-//			return 2;
-//		} else if (s instanceof AgainStrategy) {
-//			return 3;
-//		} else {
-//			return 0;
-//		}
-		return 0;
-	}
-	
-	public abstract int getUtilValue( MancalaBoard board );
+	public abstract int getHeuristicValue( MancalaBoard board );
 }

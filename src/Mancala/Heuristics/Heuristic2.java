@@ -8,7 +8,7 @@ public class Heuristic2 extends MancalaHeuristic {
 	int W1 = 0, W2 = 0, W3 = 0, W4 = 0;
 	
 	@Override
-	public int getUtilValue( MancalaBoard board ) {
+	public int getHeuristicValue( MancalaBoard board ) {
 		if (W1 == 0) {
 			W1 = new Random().nextInt( MAX_WEIGHT ) + 1;
 			W2 = new Random().nextInt( MAX_WEIGHT ) + 1;
