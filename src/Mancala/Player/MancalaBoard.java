@@ -3,8 +3,8 @@ package Mancala.Player;
 // A simple mancala game with a text based interface.
 
 
-import Mancala.Heuristics.MancalaHeuristic;
 import Algorithms.Minimax.MinimaxProblem;
+import Mancala.Heuristics.MancalaHeuristic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,6 +67,14 @@ public class MancalaBoard implements MinimaxProblem, Cloneable {
 	
 	public int getStonesMoved() {
 		return stonesMoved;
+	}
+	
+	public int getProbableExtraMoves( int playerNo ) {
+		int sum = 0;
+		for (int j = 1; j <= bins; j++) {
+			if (players[playerNo][j] == j) ++sum;
+		}
+		return sum;
 	}
 ///=============================== Getter-Setters ===========================///
 	

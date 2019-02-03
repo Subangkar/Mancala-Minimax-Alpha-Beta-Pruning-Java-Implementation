@@ -1,9 +1,9 @@
 package Mancala.Heuristics;
 
 
+import Algorithms.Minimax.Minimax;
 import Mancala.Player.Main;
 import Mancala.Player.MancalaBoard;
-import Algorithms.Minimax.Minimax;
 
 public abstract class MancalaHeuristic {
 	public static final int MAX_WEIGHT=15;
@@ -25,6 +25,8 @@ public abstract class MancalaHeuristic {
 		switch (i){
 			case 1:return new Heuristic1();
 			case 2:return new Heuristic2();
+			case 3:return new Heuristic3();
+			case 4:return new Heuristic4();
 			default:return new UserHeuristic();
 		}
 	}
