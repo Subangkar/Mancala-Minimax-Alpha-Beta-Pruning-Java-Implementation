@@ -4,6 +4,7 @@ package Mancala.Player;
 import Mancala.Heuristics.MancalaHeuristic;
 
 import java.io.*;
+import java.util.Random;
 
 public class Main {
 	private static final int nBins = 6;
@@ -11,8 +12,8 @@ public class Main {
 	public static final boolean DEBUG = false;
 	public static final int MAX_DEPTH = 11;
 	private static final int nMaxStages = 150;
-	private static final boolean PRINT_STATES = false;
-	private static final int NO_GAMES_PER_HEURISTIC = 10;
+	private static final boolean PRINT_STATES = true;
+	private static final int NO_GAMES_PER_HEURISTIC = 50;
 	private static final int MAX_ORDER = 1;
 	private static final int[] HEURISTIC_PLAYER0 = { 1 , 2 , 3 , 4 };
 	private static final int[] HEURISTIC_PLAYER1 = { 1 , 2 , 3 , 4 };
@@ -26,18 +27,19 @@ public class Main {
 		for (int i : HEURISTIC_PLAYER0) {
 			for (int j : HEURISTIC_PLAYER1) {
 				for (int order = 0; order < MAX_ORDER; ++order) {
-					if (order == 1 && i == j) break;
+//					if (order == 1 && i == j) break;
 					h0 = order == 0 ? i : j;
 					h1 = order == 0 ? j : i;
 					int n0 = 0, n1 = 0, nD = 0;
 					long start_time = System.currentTimeMillis();
 					for (int game = 0; game < NO_GAMES_PER_HEURISTIC; ++game) {
-						int r = playLoop( selectStrategy( h0 ) , selectStrategy( h1 ) );
+						int depth = new Random().nextInt( 4 ) + 8;
+						int r = playLoop( selectStrategy( h0 ) , selectStrategy( h1 ) , depth );
 						if (r == 0) ++n0;
 						if (r == 1) ++n1;
 						if (r == -1) ++nD;
 						System.setOut( stdout_ );
-						if (i == 1 && j == 1) break;
+//						if (i == 1 && j == 1) break;
 					}
 					logFile.println( "0>Heuristic " + h0 + " : " + n0 + "\n1>Heuristic " + h1 + " : " + n1 + "\n >Draw        : " + nD );
 					logFile.println( "Execution time: " + (System.currentTimeMillis() - start_time) + "\n" );
@@ -51,7 +53,7 @@ public class Main {
 
 ///======================== IO Methods =======================================////
 	
-	public static int playLoop( MancalaHeuristic s0 , MancalaHeuristic s1 ) {
+	public static int playLoop( MancalaHeuristic s0 , MancalaHeuristic s1 , int MAX_DEPTH ) {
 		int bins = nBins;//stdin.readInt( "Specify the number of bins on each side." );
 		int stones = nStones;//stdin.readInt( "Specify the number of stones initially in each bin." );
 		try {
@@ -60,7 +62,7 @@ public class Main {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		return play( bins , stones , s0 , s1 );
+		return play( bins , stones , s0 , s1 , MAX_DEPTH );
 //		System.setOut( ps );
 	}
 	
@@ -72,10 +74,23 @@ public class Main {
 	///======================== IO Methods =======================================////
 //================================================================================
 	
-	public static int play( int bins , int stones , MancalaHeuristic s0 , MancalaHeuristic s1 ) {
-		MancalaBoard board = new MancalaBoard( bins , stones , s0 , s1 );
-		
-		if (PRINT_STATES) System.out.println( board );
+	public static int play( int bins , int stones , MancalaHeuristic s0 , MancalaHeuristic s1 , int MAX_DEPTH ) {
+		MancalaBoard board = new MancalaBoard( bins , stones , s0 , s1 , MAX_DEPTH );
+
+//		if (PRINT_STATES) System.out.println( board );
+//		board.move( 4 );
+//		if (PRINT_STATES) System.out.println( board );
+//		board.move( 1 );
+//		if (PRINT_STATES) System.out.println( board );
+//		board.move( 5 );
+//		if (PRINT_STATES) System.out.println( board );
+//		board.move( 6 );
+//		if (PRINT_STATES) System.out.println( board );
+//		board.move( 5 );
+//		if (PRINT_STATES) System.out.println( board );
+//		board.move( 2 );
+//		if (PRINT_STATES) System.out.println( board );
+//		return 0;
 		int round = 0;
 		while (!board.isGameOver() && round < nMaxStages) {
 			if (PRINT_STATES) System.out.println( "------------" + round + "--------------" );

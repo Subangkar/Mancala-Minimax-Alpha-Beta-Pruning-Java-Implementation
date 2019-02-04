@@ -5,7 +5,7 @@ import Mancala.Player.MancalaBoard;
 import java.util.Random;
 
 public class Heuristic2 extends MancalaHeuristic {
-	int W1 = 0, W2 = 0, W3 = 0, W4 = 0;
+	int W1 = 3, W2 = 2, W3 = 0, W4 = 0;
 	
 	@Override
 	public int getHeuristicValue( MancalaBoard board ) {

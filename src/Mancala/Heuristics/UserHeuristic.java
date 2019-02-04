@@ -5,7 +5,7 @@ import Mancala.Player.Stdin;
 
 public class UserHeuristic extends MancalaHeuristic {
 	@Override
-	public int selectMove( MancalaBoard board ) {
+	public int selectMove( MancalaBoard board , int depth ) {
 		int player = board.currentPlayer();
 		int bins = board.getBins();
 		int bin = Stdin.readIntInRange( 1 , bins , "Please select a bin to move for Player" + player );
@@ -13,7 +13,7 @@ public class UserHeuristic extends MancalaHeuristic {
 			System.err.println( "Bin " + bin + " is empty. Please try again." );
 			bin = Stdin.readIntInRange( 1 , bins , "Please select a bin to move for Player" + player );
 		}
-		System.out.println("Ok");
+		System.out.println( "Ok" );
 		return bin;
 	}
 	

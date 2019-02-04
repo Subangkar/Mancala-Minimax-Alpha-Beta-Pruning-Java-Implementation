@@ -5,7 +5,7 @@ import Mancala.Player.MancalaBoard;
 import java.util.Random;
 
 public class Heuristic4 extends MancalaHeuristic {
-	int W1 = 0, W2 = 0, W3 = 0, W4 = 0;
+	private int W1 = 4, W2 = 2, W3 = 2, W4 = 1;
 	
 	@Override
 	public int getHeuristicValue( MancalaBoard board ) {
@@ -24,7 +24,8 @@ public class Heuristic4 extends MancalaHeuristic {
 		int stones_in_my_side = board.getPlayersTotalStones( maxPlayer );
 		int stones_in_opponents_side = board.getPlayersTotalStones( minPlayer );
 		int extra_moves = board.getProbableExtraMoves( maxPlayer );
+		int nStonesMoved = board.getStonesMoved();
 		return W1 * (stones_in_my_storage - stones_in_opponents_storage) + W2 * (stones_in_my_side - stones_in_opponents_side) + W3 * extra_moves +
-				       W4 * board.getStonesMoved();
+				       W4 * nStonesMoved;
 	}
 }

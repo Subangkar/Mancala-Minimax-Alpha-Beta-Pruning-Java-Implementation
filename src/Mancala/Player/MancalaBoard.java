@@ -19,12 +19,13 @@ public class MancalaBoard implements MinimaxProblem, Cloneable {
 	private MancalaHeuristic[] heuristics; // An array with two elements = the two players' heuristics.
 	private int stonesMoved = 0; // Stones moved on last move.
 	private static final boolean DEBUG = false;
+	private int depth = 0;
 	
 	private static final int STORAGE = 0;
 	
 	/// bins is the number of bins per side, not including the mancala.
 	/// stones is the number of stones initially in each bin.
-	public MancalaBoard( int bins , int stonesPerBin , MancalaHeuristic h0 , MancalaHeuristic h1 ) {
+	public MancalaBoard( int bins , int stonesPerBin , MancalaHeuristic h0 , MancalaHeuristic h1 , int depth ) {
 		this.bins = bins;
 		this.totalStones = bins * stonesPerBin * 2;
 		players = new int[2][bins + 1];
@@ -38,6 +39,7 @@ public class MancalaBoard implements MinimaxProblem, Cloneable {
 		heuristics = new MancalaHeuristic[2];
 		heuristics[0] = h0;
 		heuristics[1] = h1;
+		this.depth = depth;
 	}
 
 ////*==================================== GETTER / SETTERS =============================*/
@@ -173,7 +175,7 @@ public class MancalaBoard implements MinimaxProblem, Cloneable {
 		if (getPlayersTotalStones( opponentPlayer() ) != 0) {
 			// Invokes strategy of current player to make move. Returns the bin selected.
 			this.setMaxPlayer( currentPlayer );
-			bin = heuristics[currentPlayer].selectMove( this );
+			bin = heuristics[currentPlayer].selectMove( this , depth );
 //		if (bin <= 0) return -1;
 		}
 		
@@ -182,7 +184,7 @@ public class MancalaBoard implements MinimaxProblem, Cloneable {
 	}
 	
 	
-	private void move( int bin ) {
+	void move( int bin ) {
 		// Bin should be a bin index for current player that holds one or more stones.
 		// Performs the basic MancalaBoard move: removes stones from bin
 		// and places around board. IF last stone is placed in empty
@@ -300,7 +302,7 @@ public class MancalaBoard implements MinimaxProblem, Cloneable {
 		for (int r = 0; r < this.players.length; r++)
 			if (this.players[r].length >= 0)
 				System.arraycopy( this.players[r] , 0 , clone.players[r] , 0 , this.players[r].length );
-		clone.heuristics = this.heuristics.clone();
+//		clone.heuristics = this.heuristics.clone();
 		return clone;
 	}
 
