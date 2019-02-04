@@ -19,7 +19,7 @@ public class MancalaBoard implements MinimaxProblem, Cloneable {
 	private MancalaHeuristic[] heuristics; // An array with two elements = the two players' heuristics.
 	private int stonesMoved = 0; // Stones moved on last move.
 	private static final boolean DEBUG = false;
-	private int depth = 0;
+	private int depth;
 	
 	private static final int STORAGE = 0;
 	
@@ -364,7 +364,18 @@ public class MancalaBoard implements MinimaxProblem, Cloneable {
 			return Integer.toString( n );
 		}
 	}
-
+	
+	public static void printBoardConfiguration() {
+		MancalaBoard board = new MancalaBoard( 6 , 1 , null , null , 0 );
+		for (int p = 0; p < 2; p++) {
+			for (int bin = 0; bin <= 6; ++bin) {
+				board.players[p][bin] = bin;
+			}
+		}
+		System.out.println( "Board index Configuration: " );
+		System.out.println( " ----- Player 0 ----- " );
+		System.out.println( board + " ----- Player 1 ----- " + "\n\n" );
+	}
 ///*====================================================================================*/
 	
 	

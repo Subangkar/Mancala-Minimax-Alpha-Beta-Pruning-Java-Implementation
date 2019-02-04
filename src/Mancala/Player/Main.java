@@ -7,20 +7,24 @@ import java.io.*;
 import java.util.Random;
 
 public class Main {
+////*================================== DEBUG VARIABLES ==============================*/
+	
 	private static final int nBins = 6;
 	private static final int nStones = 4;
 	public static final boolean DEBUG = false;
-	public static final int MAX_DEPTH = 11;
+	public static final int MAX_DEPTH = 15;
 	private static final int nMaxStages = 150;
-	private static final boolean PRINT_STATES = true;
+	private static final boolean PRINT_BOARD_CONFIG = true;
 	private static final int NO_GAMES_PER_HEURISTIC = 50;
 	private static final int MAX_ORDER = 1;
 	private static final int[] HEURISTIC_PLAYER0 = { 1 , 2 , 3 , 4 };
 	private static final int[] HEURISTIC_PLAYER1 = { 1 , 2 , 3 , 4 };
+	private static final int[] OPTIMAL_MOVES = { 4 , 1 , 5 , 6 , 5 , 2 };
+////*=================================================================================*/
 	
 	private static final PrintStream stdout_ = System.out;
 	
-	public static void main( String[] args ) throws IOException {
+	static void statPrint() throws IOException {
 		PrintWriter logFile = new PrintWriter( new FileWriter( "log.log" ) );
 		
 		int h0, h1;
@@ -28,8 +32,8 @@ public class Main {
 			for (int j : HEURISTIC_PLAYER1) {
 				for (int order = 0; order < MAX_ORDER; ++order) {
 //					if (order == 1 && i == j) break;
-					h0 = order == 0 ? i : j;
-					h1 = order == 0 ? j : i;
+					h0 = i;
+					h1 = j;
 					int n0 = 0, n1 = 0, nD = 0;
 					long start_time = System.currentTimeMillis();
 					for (int game = 0; game < NO_GAMES_PER_HEURISTIC; ++game) {
@@ -48,25 +52,41 @@ public class Main {
 				
 			}
 		}
+		
+	}
+	
+	public static void main( String[] args ) throws IOException {
+		int h[] = { 0 , 0 };
+		if (DEBUG) {
+			statPrint();
+		} else {
+			for (int p = 0; p <= 1; ++p) {
+				h[p] = Stdin.readIntInRange( 0 , 4 , "Select a heuristic [0-4] for player " + p + " (O for Human): " );
+			}
+			int depth = MAX_DEPTH;
+			if (h[0] != 0 || h[1] != 0) depth = Stdin.readIntInRange( 1 , 15 , "Enter Depth to search @ each node: " );
+			playLoop( selectStrategy( h[0] ) , selectStrategy( h[1] ) , depth );
+		}
 	}
 
 
 ///======================== IO Methods =======================================////
 	
 	public static int playLoop( MancalaHeuristic s0 , MancalaHeuristic s1 , int MAX_DEPTH ) {
-		int bins = nBins;//stdin.readInt( "Specify the number of bins on each side." );
-		int stones = nStones;//stdin.readInt( "Specify the number of stones initially in each bin." );
-		try {
+		int bins = DEBUG ? nBins : Stdin.readIntInRange( 0 , 10 , "Specify the number of bins on each side: " );
+		int stones = DEBUG ? nStones : Stdin.readIntInRange( 0 , 10 , "Specify the number of stones initially in each bin: " );
+		if (DEBUG) try {
 			System.setOut( new PrintStream( "out.log" ) );
 			System.setErr( new PrintStream( "err.log" ) );
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		MancalaBoard.printBoardConfiguration();
 		return play( bins , stones , s0 , s1 , MAX_DEPTH );
 //		System.setOut( ps );
 	}
 	
-	public static MancalaHeuristic selectStrategy( int n ) {
+	private static MancalaHeuristic selectStrategy( int n ) {
 		return MancalaHeuristic.intToStrategy( n );
 	}
 	
@@ -74,46 +94,38 @@ public class Main {
 	///======================== IO Methods =======================================////
 //================================================================================
 	
-	public static int play( int bins , int stones , MancalaHeuristic s0 , MancalaHeuristic s1 , int MAX_DEPTH ) {
+	private static int play( int bins , int stones , MancalaHeuristic s0 , MancalaHeuristic s1 , int MAX_DEPTH ) {
 		MancalaBoard board = new MancalaBoard( bins , stones , s0 , s1 , MAX_DEPTH );
-
-//		if (PRINT_STATES) System.out.println( board );
-//		board.move( 4 );
-//		if (PRINT_STATES) System.out.println( board );
-//		board.move( 1 );
-//		if (PRINT_STATES) System.out.println( board );
-//		board.move( 5 );
-//		if (PRINT_STATES) System.out.println( board );
-//		board.move( 6 );
-//		if (PRINT_STATES) System.out.println( board );
-//		board.move( 5 );
-//		if (PRINT_STATES) System.out.println( board );
-//		board.move( 2 );
-//		if (PRINT_STATES) System.out.println( board );
-//		return 0;
+		
+		if (DEBUG) {
+			for (int m : OPTIMAL_MOVES) {
+				if (PRINT_BOARD_CONFIG) System.out.println( board );
+				board.move( m );
+			}
+		} else if (PRINT_BOARD_CONFIG) System.out.println( board );
 		int round = 0;
 		while (!board.isGameOver() && round < nMaxStages) {
-			if (PRINT_STATES) System.out.println( "------------" + round + "--------------" );
+			if (PRINT_BOARD_CONFIG) System.out.println( "------------" + round + "--------------" );
 			int currentPlayer = board.currentPlayer();
-			if (PRINT_STATES) System.out.println( "Player " + currentPlayer + "\'s move." );
+			if (PRINT_BOARD_CONFIG) System.out.println( "Player " + currentPlayer + "\'s move." );
 			int bin = board.move();
 			if (bin <= 0) break;
-			if (PRINT_STATES) System.out.println( "Player " + currentPlayer + " selects "
+			if (PRINT_BOARD_CONFIG) System.out.println( "Player " + currentPlayer + " selects "
 					                                      + board.stonesMoved() + " stones from bin " + bin );
-			if (PRINT_STATES) System.out.println( board );
-			if (PRINT_STATES) System.out.println( "\n\n\n--------------------------\n\n\n" );
+			if (PRINT_BOARD_CONFIG) System.out.println( board );
+			if (PRINT_BOARD_CONFIG) System.out.println( "\n\n\n--------------------------\n\n\n" );
 			round++;
 		}
 		System.out.println( "Final board configuration:\n" );
 		System.out.println( board );
 		if (board.getBin( 0 , 0 ) == board.getBin( 1 , 0 )) {
-			if (PRINT_STATES) System.out.println( "The game ends in a tie!" );
+			if (PRINT_BOARD_CONFIG) System.out.println( "The game ends in a tie!" );
 			return -1;
 		} else if (board.getBin( 0 , 0 ) > board.getBin( 1 , 0 )) {
-			if (PRINT_STATES) System.out.println( "Player0 wins!" );
+			if (PRINT_BOARD_CONFIG) System.out.println( "Player0 wins!" );
 			return 0;
 		} else {
-			if (PRINT_STATES) System.out.println( "Player1 wins!" );
+			if (PRINT_BOARD_CONFIG) System.out.println( "Player1 wins!" );
 			return 1;
 		}
 	}

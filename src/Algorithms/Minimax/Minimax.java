@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Minimax {
 	
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 	private static final double INF = 10000000;
 	
 	private static class Solution {
@@ -43,21 +43,17 @@ public class Minimax {
 	
 	private static Solution alphabeta( MinimaxProblem state , double alpha , double beta , boolean isMaximizing , int maxdepth ) {
 		if (state.isTerminal() || maxdepth == 0) {
-//			if (DEBUG && state.isTerminal())
-//				System.err.println( (state.isMaximizing() ? "max @" : "min @") + (maxdepth) + " current v: " + state.heuristicValue() + "\n" + state );
+			if (DEBUG && state.isTerminal())
+				System.err.println( (state.isMaximizing() ? "max @" : "min @") + (maxdepth) + " current v: " + state.heuristicValue() + "\n" + state );
 			return new Solution( state , state.heuristicValue() );
 		}
 		if (isMaximizing) {
 			Solution maxSolution = new Solution( null , -INF );
-			ArrayList< MinimaxProblem > suclist = state.successors();
-//			suclist.sort( ( n1 , n2 ) -> -(int) (n1.heuristicValue() - n2.heuristicValue()) );
-			for (MinimaxProblem s : suclist) {
+			for (MinimaxProblem s : state.successors()) {
 				if (s == null) continue;
 				Solution solution = new Solution( s , alphabeta( s , alpha , beta , s.isMaximizing() , maxdepth - 1 ).v );
 				maxSolution = Solution.max( maxSolution , solution );
 				alpha = Math.max( alpha , maxSolution.v );
-				if (maxdepth == 15)
-					System.err.println( (solution.instance.isMaximizing() ? "max @" : "min @") + (maxdepth) + " current v: " + solution.v + "\n" + " max v: " + maxSolution.v + "\n" + solution.instance );
 				if (alpha >= beta) break; //beta-cut-off
 			}
 			return maxSolution;
@@ -65,15 +61,11 @@ public class Minimax {
 		} else {
 			Solution minSolution = new Solution( null , INF );
 			
-			ArrayList< MinimaxProblem > suclist = state.successors();
-//			suclist.sort( ( n1 , n2 ) -> (int) (n1.heuristicValue() - n2.heuristicValue()) );
-			for (MinimaxProblem s : suclist) {
+			for (MinimaxProblem s : state.successors()) {
 				if (s == null) continue;
 				Solution solution = new Solution( s , alphabeta( s , alpha , beta , s.isMaximizing() , maxdepth - 1 ).v );
 				minSolution = Solution.min( minSolution , solution );
 				beta = Math.min( beta , minSolution.v );
-				if (maxdepth == 15)
-					System.err.println( (solution.instance.isMaximizing() ? "max @" : "min @") + (maxdepth) + " current v: " + solution.v + "\n" + " min v: " + minSolution.v + "\n" + solution.instance );
 				if (alpha >= beta) break; //alpha-cut-off
 			}
 			return minSolution;
